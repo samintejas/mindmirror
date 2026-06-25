@@ -1,0 +1,37 @@
+.nav h2 {
+
+    display:none;
+
+}
+
+#image {
+
+    display:none;
+
+}
+
+ul {
+    list-style-type: none;
+    color: #f8f5f6;
+}
+
+ul span.folder {
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+ul span.folder::before {
+    display: inline-block;
+    content: "→";
+    margin-right: 0.4rem;
+}
+
+ul span.folder.active::before {
+    content: "↘";
+}
+
+ul.nested-item {
+    max-height: 0;
+    overflow: hidden;
+}
+

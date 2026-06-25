@@ -1,0 +1,15 @@
+app:
+  port: 8080
+  content:
+    sourcetype: local
+    git: samin.dev
+    branch: samin.dev
+    source: /home/samin/repo/notes
+    dest: /home/samin/tmp/mindmirror/public
+  styles:
+    path: /home/samin/.config/mindmirror/styles
+    stylesheets:
+      index: imhome.css
+      pages: water-auto.css
+  scripts:
+    path: /home/samin/.config/mindmirror/scripts

@@ -1,0 +1,221 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+:root {
+    --text-color: #e0e0e0; /* Light gray for readability */
+    --bg-color: #121212; /* Very dark gray background */
+    --primary-color: #ffb8ad; /* Muted peachy color */
+    --secondary-color: #1e1e1e; /* Dark gray for backgrounds */
+    --accent-color: #6a3b7d; /* Vibrant purple for accents */
+    --border-color: #333; /* Dark gray border color for tables and blocks */
+    --highlight-color: #f2a1c6; /* Light pink for highlights and hover states */
+    --table-header-bg: #1f1f1f; /* Darker background for table headers */
+    --table-row-bg: #161616; /* Dark gray for table rows */
+    --table-border-color: #2a2a2a; /* Slightly lighter border color for better alignment with the background */
+    --table-hover-bg: #2c2c2c; /* Darker gray for row hover effect */
+    --table-heading-color: #f5f5f5; /* Light color for table headers */
+    --table-content-color: #e0e0e0; /* Light gray for table content */
+    --table-border-radius: 16px;
+    --font-body: "Roboto", sans-serif;
+    --font-code: "Source Code Pro", monospace;
+    --font-heading: "Source Sans Pro", sans-serif;
+    --font-quote: "SUSE", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 24px;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    padding: 5vh 5vw;
+    font-feature-settings:
+        "liga" 1,
+        "calt" 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+p {
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition:
+        color 0.3s ease,
+        border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+a:hover {
+    color: var(--highlight-color);
+    border-bottom: 2px solid var(--highlight-color);
+}
+
+blockquote {
+    background-color: var(--secondary-color);
+    border-left: 5px solid var(--accent-color);
+    color: var(--text-color);
+    margin: 20px 0;
+    padding: 15px 20px;
+    font-style: italic;
+    font-family: var(--font-quote);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+pre,
+code {
+    font-family: var(--font-code);
+    font-size: 0.9em;
+}
+
+pre {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+ul,
+ol {
+    margin: 20px 0;
+    padding-left: 40px;
+}
+
+li {
+    margin-bottom: 10px; /* Reduced line distance between list items */
+}
+
+hr {
+    border: 0;
+    height: 2px;
+    background: var(--highlight-color);
+    margin: 40px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: var(--secondary-color);
+    overflow: hidden; /* Ensures rounded corners are visible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: var(--table-border-radius);
+    border: 1px solid var(--table-border-color);
+}
+
+th,
+td {
+    border: 1px solid var(--table-border-color);
+    border: 1px solid transparent;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--table-header-bg);
+    color: var(--table-heading-color); /* Color for table headers */
+    font-family: var(--font-heading);
+    font-weight: 600;
+}
+
+td {
+    background-color: var(
+        --table-row-bg
+    ); /* Dark gray background for table rows */
+
+    color: var(--table-content-color); /* Color for table content */
+}
+
+tr:nth-child(even) {
+    background-color: var(
+        --table-row-bg
+    ); /* Dark gray background for even rows */
+}
+
+tr:hover {
+    background-color: var(--table-hover-bg); /* Darker gray on hover */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (min-width: 1080px) {
+    body {
+        padding-top: 25vh;
+        padding-bottom: 10vh;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-left: 25vw;
+        margin-right: 25vw;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    body {
+        padding: 5vh 5vw;
+        font-size: 18px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-bottom: 15px;
+    }
+
+    p,
+    ul,
+    ol {
+        margin-bottom: 15px;
+    }
+
+    blockquote {
+        margin: 15px 0;
+        padding: 10px 15px;
+    }
+
+    pre {
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+}

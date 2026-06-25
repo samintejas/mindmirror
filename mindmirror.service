@@ -1,0 +1,15 @@
+[Unit]
+Description=Mindmirror static-site server
+After=network.target
+
+[Service]
+# Adjust the path to wherever `cargo install --path .` placed the binary
+# (e.g. ~/.cargo/bin/mindmirror) or use /usr/local/bin/mindmirror.
+ExecStart=/usr/local/bin/mindmirror serve --watch
+Restart=always
+User=samin
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

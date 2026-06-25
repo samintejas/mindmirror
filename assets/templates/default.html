@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="icon" href="/styles/favicon.ico" type="image/x-icon">
+    <script>
+        // Apply the saved theme before paint to avoid a flash.
+        (function () {
+            var t = localStorage.getItem("theme");
+            if (t === "dark" || t === "light") {
+                document.documentElement.setAttribute("data-theme", t);
+            }
+        })();
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Code+Pro&display=swap" rel="stylesheet">
+    <!-- Offline Tailwind (Play CDN build, vendored) + shared theme tokens. -->
+    <link rel="stylesheet" href="/styles/theme.css">
+    <script src="/scripts/tailwind.js"></script>
+    <script src="/scripts/tw-config.js"></script>
+    {% if style %}<link rel="stylesheet" href="/styles/{{ style }}">{% endif %}
+</head>
+{% if style %}
+<body>
+    <article class="mm-content">
+        {{ body | safe }}
+    </article>
+{% else %}
+<body class="min-h-screen bg-paper font-sans text-ink antialiased selection:bg-iris-soft">
+    <button id="theme-toggle" type="button" title="Toggle theme" aria-label="Toggle theme"
+        class="fixed right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full border border-line text-muted transition hover:border-iris hover:text-ink"></button>
+    <main class="mx-auto max-w-col px-5 py-14 md:py-20">
+        <article class="prose prose-lg mm-content prose-headings:font-semibold prose-headings:tracking-tight prose-pre:rounded-xl prose-pre:shadow-soft prose-img:rounded-xl prose-img:shadow-soft">
+            {{ body | safe }}
+        </article>
+    </main>
+    <script src="/scripts/theme.js"></script>
+{% endif %}
+    <script>hljs.highlightAll();</script>
+    <script src="/scripts/reload.js"></script>
+</body>
+</html>

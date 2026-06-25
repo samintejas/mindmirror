@@ -1,0 +1,60 @@
+/* mindmirror — shared theme tokens.
+ *
+ * Just CSS custom properties: the palette that drives every Tailwind utility
+ * and the `prose` typography (see tw-config.js). Light by default; follows the
+ * OS in the absence of an explicit choice, and a pinned `data-theme` on <html>
+ * overrides both. Legacy per-page theme stylesheets define their own variables
+ * and simply ignore these. */
+
+:root {
+    --bg: #f6f5f3;
+    --surface: #ffffff;
+    --surface-2: #fbfbfa;
+    --border: #e8e6e1;
+    --ink: #1b1a20;
+    --muted: #6c6a78;
+    --accent: #5b54e8;
+    --accent-soft: #ecebfb;
+    --danger: #c8402f;
+    --shadow: 0 1px 2px rgba(20, 18, 40, 0.04), 0 8px 24px rgba(20, 18, 40, 0.05);
+
+    /* Code blocks read as a consistent dark "terminal" in both themes, paired
+       with the github-dark highlight.js palette. */
+    --code-bg: #1b1b21;
+    --code-ink: #e9e8ef;
+
+    --mono: ui-monospace, "JetBrains Mono", "SF Mono", "Fira Code", Menlo, monospace;
+    --sans: "Source Sans Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --col: 760px;
+}
+
+:root[data-theme="dark"] {
+    --bg: #141419;
+    --surface: #1c1c23;
+    --surface-2: #202028;
+    --border: #2c2c37;
+    --ink: #e9e8ef;
+    --muted: #9a98aa;
+    --accent: #8b84ff;
+    --accent-soft: #232233;
+    --danger: #ff7a6b;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #141419;
+        --surface: #1c1c23;
+        --surface-2: #202028;
+        --border: #2c2c37;
+        --ink: #e9e8ef;
+        --muted: #9a98aa;
+        --accent: #8b84ff;
+        --accent-soft: #232233;
+        --danger: #ff7a6b;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+}

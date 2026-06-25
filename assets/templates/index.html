@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mindmirror</title>
+    <link rel="icon" href="/styles/favicon.ico" type="image/x-icon">
+    <script>
+        // Apply the saved theme before paint to avoid a flash.
+        (function () {
+            var t = localStorage.getItem("theme");
+            if (t === "dark" || t === "light") {
+                document.documentElement.setAttribute("data-theme", t);
+            }
+        })();
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Offline Tailwind (Play CDN build, vendored) + shared theme tokens. -->
+    <link rel="stylesheet" href="/styles/theme.css">
+    <script src="/scripts/tailwind.js"></script>
+    <script src="/scripts/tw-config.js"></script>
+    <style type="text/tailwindcss">
+        @keyframes mm-blink { 50% { opacity: 0; } }
+
+        /* home.js toggles [hidden] on the local/git fields; the `grid` utility
+           would otherwise win over it. */
+        [hidden] { display: none !important; }
+
+        @layer components {
+            /* Server-rendered source cards + file tree (classes emitted in Rust). */
+            .source { @apply rounded-xl border border-line bg-surface p-4 shadow-soft; }
+            .source-header { @apply mb-2 flex flex-wrap items-center gap-2 border-b border-line pb-3; }
+            .source-name { @apply font-mono text-sm font-semibold text-ink; }
+            .badge { @apply rounded border border-line bg-surface-2 px-1.5 py-0.5 font-mono text-[0.68rem] uppercase tracking-wide text-muted; }
+            .badge-git { @apply border-transparent bg-iris-soft text-iris; }
+            .source-actions { @apply ml-auto flex gap-1; }
+            .source-actions .inline { @apply m-0; }
+            .source-actions button { @apply grid h-[30px] w-[30px] place-items-center rounded-lg border border-transparent text-muted transition hover:bg-surface-2 hover:text-ink; }
+            .source-actions form[action$="remove"] button:hover { @apply text-danger; }
+
+            .source ul { @apply m-0 list-none pl-[1.1em]; }
+            .source > ul { @apply pl-0; }
+            .source li { @apply my-0.5; }
+            .folder { @apply inline-flex cursor-pointer items-center py-0.5 font-mono text-sm text-muted; }
+            .folder::before { content: "›"; @apply inline-block w-[1.1em] text-iris transition-transform; }
+            .folder.active::before { @apply rotate-90; }
+            .nested-item { @apply hidden; }
+            .nested-item.active { @apply block; }
+            .html-file a { @apply ml-[1.1em] inline-block rounded px-1.5 py-0.5 text-[0.92rem] text-ink no-underline transition hover:bg-iris-soft hover:text-iris; }
+            .empty { @apply m-0 p-8 text-center text-muted; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-paper font-sans text-ink antialiased selection:bg-iris-soft">
+    <header class="mx-auto flex max-w-col items-center justify-between px-5 pt-6">
+        <a class="font-mono text-[1.05rem] font-semibold tracking-tight text-ink no-underline" href="/">mindmirror<span class="ml-0.5 inline-block h-[1.05em] w-[0.55ch] -translate-y-[0.16em] bg-iris motion-safe:animate-[mm-blink_1.1s_steps(1)_infinite]" aria-hidden="true"></span></a>
+        <button id="theme-toggle" type="button" title="Toggle theme" aria-label="Toggle theme"
+            class="grid h-9 w-9 place-items-center rounded-full border border-line text-muted transition hover:border-iris hover:text-ink"></button>
+    </header>
+
+    <main class="mx-auto max-w-col px-5 pb-16 pt-7">
+        <div class="relative mb-4">
+            <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path>
+            </svg>
+            <input id="search" type="search" placeholder="Search notes" autocomplete="off" aria-label="Search notes"
+                class="w-full rounded-xl border border-line bg-surface py-3.5 pl-12 pr-4 text-base text-ink shadow-soft outline-none transition placeholder:text-muted focus:border-iris focus:ring-2 focus:ring-iris-soft">
+        </div>
+
+        <details class="group mb-7 rounded-xl border border-line bg-surface shadow-soft" {% if no_sources %}open{% endif %}>
+            <summary class="flex cursor-pointer list-none items-center gap-1.5 px-4 py-3.5 text-sm font-medium text-muted group-open:border-b group-open:border-line group-open:text-ink">
+                <span class="font-mono text-iris transition-transform group-open:rotate-45">+</span> Add source
+            </summary>
+            <form class="grid gap-4 p-4" method="post" action="/sources/add">
+                <div class="grid gap-1.5">
+                    <label class="text-xs font-medium text-muted" for="src-name">Name</label>
+                    <input class="w-full rounded-lg border border-line bg-surface-2 px-3 py-2.5 text-[0.95rem] text-ink outline-none transition focus:border-iris focus:ring-2 focus:ring-iris-soft" id="src-name" name="name" placeholder="my-notes" required pattern="[^/\\]+">
+                </div>
+                <div class="grid gap-1.5">
+                    <label class="text-xs font-medium text-muted" for="kind-select">Kind</label>
+                    <select class="w-full rounded-lg border border-line bg-surface-2 px-3 py-2.5 text-[0.95rem] text-ink outline-none transition focus:border-iris focus:ring-2 focus:ring-iris-soft" name="kind" id="kind-select">
+                        <option value="local">Local folder</option>
+                        <option value="git">Git repository</option>
+                    </select>
+                </div>
+                <div class="field-local grid gap-1.5">
+                    <label class="text-xs font-medium text-muted" for="src-path">Folder path</label>
+                    <div class="flex gap-2">
+                        <input class="min-w-0 flex-1 rounded-lg border border-line bg-surface-2 px-3 py-2.5 text-[0.95rem] text-ink outline-none transition focus:border-iris focus:ring-2 focus:ring-iris-soft" id="src-path" name="path" placeholder="/path/to/notes">
+                        <button id="browse" type="button"
+                            class="shrink-0 rounded-lg border border-line bg-surface-2 px-3.5 text-sm text-ink transition hover:border-iris hover:text-iris disabled:cursor-default disabled:opacity-60">Browse…</button>
+                    </div>
+                </div>
+                <div class="field-git grid gap-1.5" hidden>
+                    <label class="text-xs font-medium text-muted" for="src-url">Repository URL</label>
+                    <input class="w-full rounded-lg border border-line bg-surface-2 px-3 py-2.5 text-[0.95rem] text-ink outline-none transition focus:border-iris focus:ring-2 focus:ring-iris-soft" id="src-url" name="url" placeholder="https://example.com/repo.git">
+                </div>
+                <div class="field-git grid gap-1.5" hidden>
+                    <label class="text-xs font-medium text-muted" for="src-branch">Branch</label>
+                    <input class="w-full rounded-lg border border-line bg-surface-2 px-3 py-2.5 text-[0.95rem] text-ink outline-none transition focus:border-iris focus:ring-2 focus:ring-iris-soft" id="src-branch" name="branch" placeholder="main" value="main">
+                </div>
+                <button type="submit"
+                    class="justify-self-start rounded-lg bg-iris px-4 py-2.5 text-[0.92rem] font-medium text-white transition hover:brightness-110">Add source</button>
+            </form>
+        </details>
+
+        <div id="file-tree" class="grid gap-4">
+            {{ tree | safe }}
+        </div>
+    </main>
+
+    <script src="/scripts/home.js"></script>
+    <script src="/scripts/tree.js"></script>
+    <script src="/scripts/search.js"></script>
+    <script src="/scripts/theme.js"></script>
+</body>
+</html>
